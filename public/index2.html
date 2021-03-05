@@ -1,15 +1,37 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" type="text/css">
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <title>iim-demo-todo-list</title>
 
-<style>
+    <style>
+
+      *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
       body{
         display: flex;
         justify-content: center;
         align-items: center;
       }
 
-      div{
-        display: block;
+      #app{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 700px;
+        height: 600px;
+        background-color: #FFD14A;
       }
-
       #TodoCard{
         position: relative;
         height: 350px;
@@ -88,8 +110,8 @@
         position: relative;
         display: flex;
         align-items: center;
-        width: 100%;
         height: 25px;
+        width: 100%;
         margin: 10px 0;
       }
 
@@ -124,19 +146,8 @@
         width: 60%;
       }
 
-      .deleted{
-        display:none;
-      }
-
       .striped{
         text-decoration:line-through;
-      }
-
-      .container ul{
-        position: absolute;
-        width: 550px;
-        left: 28px;
-        top: 90px;
       }
 
 /* --------------------------------------------------------- */
@@ -229,24 +240,106 @@
 
     </style>
 
-<template>
-    <TodoCard/>
+  </head>
+  <body>
+    
+    <div id="app">
+      <div id="TodoCard">
+            <header>
+                <p class="date">{{ today }}</p>
+                <h2>{{ title }}</h2>
+                <p class="task">{{TodoCard.taskNumber}} tâches</p>
+            </header>
+
+            <div id="NewTodo">
+                <div class="group">      
+                    <input class="taskInput" v-model.text="TodoCard.NewTodo.task" type="text" required>
+                    <span class="highlight"></span>
+                    <span class="bar"></span>
+                    <label class="taskLabel">Nouvelle tâche...</label>
+                </div>
+                <button @click='addToList' class="addingButton">
+                    <p>+</p>
+                </button>
+            </div>
 
 
+            <ul id="TodoList">
+                <li v-for="item in TodoCard.TodoList" v-if="item.display" >
+                    <input @click='checkTask(item.index)' class ="todoCheckbox" name="checkbox" type="checkbox">
+                    <label class="todoLabel" v-bind:class="{ striped: item.isStriped }" for="checkbox">{{ item.name }}</label>
+                    <button @click='removeToList(item.index)' class="deletingButton">
+                        <img src="img/delete.png" alt="Poubelle">
+                    </button>
+                </li>
+            </ul>
 
-</template>
+        </div>
+      
+    </div>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script>
+      const app = new Vue({
+        el: '#app',
+        data: {
+          title: "VueJs Tutorial Todo-list",
+          i: 0,
+          atelier: 'Atelier Mars 2021',
+          about: 'Découvrer comment styliser simplement votre Todo list avec ',
+          websiteName: 'Bulma',
+          TodoCard: {
+            taskNumber: 0,
+            NewTodo: {
+              task: '',
 
-<script>
-import TodoCard from './components/TodoCard.vue'
-export default {
-  name: 'app',
-  data () {
-    return {
-      msg: 'Hello, et bienvenue sur la demo TodoList en Vue.js!'
-    } 
-  },
-  components:{
-    TodoCard,
-  }
-}
-</script>
+            },
+            TodoList: [],
+          },
+        },
+        computed: {
+          today() {
+
+            let options = { weekday: 'long'};
+            let today = new Date();
+            let jour = new Intl.DateTimeFormat('fr-FR', options).format(today);
+            let dd = String(today.getDate()).padStart(2, '0');
+            let mm = String(today.getMonth());
+            let monthName = ["Janvier","Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
+
+            let date = jour + " " + dd + " " + monthName[mm];
+            return date;
+
+
+          }
+        },
+        methods: {
+          removeToList(index) {
+            this.TodoCard.TodoList[index].display = false
+            this.TodoCard.taskNumber -= 1;
+          },
+          addToList(){
+            if(this.TodoCard.NewTodo.task == "" || this.TodoCard.NewTodo.task == undefined){
+              return
+            };
+            let task = {
+              name: this.TodoCard.NewTodo.task,
+              index: this.i,
+              display: true,
+              isStriped: false,
+            };
+            this.TodoCard.TodoList.push(task);
+            this.TodoCard.taskNumber += 1;
+            this.i += 1;
+          },
+          checkTask(index){
+            let item = this.TodoCard.TodoList[index]
+            item.isStriped ? item.isStriped = false : item.isStriped = true;
+          }
+        },
+      })
+    
+    </script>
+    
+    <!-- built files will be auto injected -->
+  </body>
+</html>

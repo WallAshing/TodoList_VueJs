@@ -9,12 +9,350 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" type="text/css">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title>iim-demo-todo-list</title>
+
+    <style>
+
+      *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      #app{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 700px;
+        height: 600px;
+        background-color: #FFD14A;
+      }
+      #TodoCard{
+        position: relative;
+        height: 350px;
+        width: 610px;
+        background-color: white;
+        border-radius: 5px;
+      }
+      header{
+        position: relative;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 5px 5px -2px rgba(128, 128, 128, 0.24);
+        border-radius: 5px;
+      }
+      h2{
+        color: #0CD3B5;
+      }
+      .date{
+        position: absolute;
+        left: 0px;
+        margin: 0px 10px;
+      }
+      .date::first-letter{
+        text-transform: uppercase;
+      }
+      .task{
+        position: absolute;
+        right: 0px;
+        margin: 0px 10px;
+      }
+      #NewTodo{
+        position:relative; 
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      button:focus {outline:0;}
+
+      .addingButton{
+        position: absolute;
+        right: 120px;
+        top: 37px;
+        height: 30px;
+        width: 30px;
+        border-radius: 100%;
+        border: none;
+        background-color: #48C774;
+        transition: 1s;
+      }
+
+      .addingButton:hover{
+        cursor: pointer;
+        background-color: rgb(57, 163, 98);
+      }
+
+      .addingButton p{
+        position: absolute;
+        top: -5px;
+        left: 6px;
+        font-size: 25px;
+        color: white;
+      }
+
+      #TodoList{
+        position: absolute;
+        height: 200px;
+        width: 570px;
+        top: 130px;
+        left: 20px;
+      }
+
+      li{
+        position: relative;
+        display: flex;
+        align-items: center;
+        height: 25px;
+        width: 100%;
+        margin: 10px 0;
+      }
+
+      .todoLabel{
+        margin-left: 10px;
+        margin-bottom: 3px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: fit-content;
+        
+      }
+
+      .deletingButton{
+        position: absolute;
+        right: 0px;
+        top: -2.5px;
+        height: 30px;
+        width: 30px;
+        border-radius: 100%;
+        border: none;
+        background-color: red;
+        transition: 1s;
+      }
+
+      .deletingButton:hover{
+        cursor: pointer;
+        background-color: rgb(185, 0, 0);
+      }
+
+      .deletingButton img{
+        width: 60%;
+      }
+
+      .striped{
+        text-decoration:line-through;
+      }
+
+/* --------------------------------------------------------- */
+
+      .group 			  { 
+        position:absolute;
+        top: 25px;
+        margin-bottom:45px; 
+      }
+      .taskInput 				{
+        font-size:18px;
+        padding:10px 10px 10px 5px;
+        display:block;
+        width:300px;
+        border:none;
+        border-bottom:1px solid #757575;
+      }
+      .taskInput:focus{ outline:none; }
+
+      .taskLabel 				 {
+        color:#999; 
+        font-size:18px;
+        font-weight:normal;
+        position:absolute;
+        pointer-events:none;
+        left:5px;
+        top:10px;
+        transition:0.2s ease all; 
+        -moz-transition:0.2s ease all; 
+        -webkit-transition:0.2s ease all;
+      }
+
+      .taskInput:focus ~ .taskLabel, .taskInput:valid ~ .taskLabel 		{
+        top:-20px;
+        font-size:14px;
+        color:#48C774;
+      }
+
+      .bar 	{ position:relative; display:block; width:300px; }
+      .bar:before, .bar:after 	{
+        content:'';
+        height:2px; 
+        width:0;
+        bottom:1px; 
+        position:absolute;
+        background:#48C774; 
+        transition:0.2s ease all; 
+        -moz-transition:0.2s ease all; 
+        -webkit-transition:0.2s ease all;
+      }
+      .bar:before {
+        left:50%;
+      }
+      .bar:after {
+        right:50%; 
+      }
+
+      .taskInput:focus ~ .bar:before, .taskInput:focus ~ .bar:after {
+        width:50%;
+      }
+
+      .highlight {
+        position:absolute;
+        height:60%; 
+        width:100px; 
+        top:25%; 
+        left:0;
+        pointer-events:none;
+        opacity:0.5;
+      }
+
+      .taskInput:focus ~ .highlight {
+        -webkit-animation:inputHighlighter 0.3s ease;
+        -moz-animation:inputHighlighter 0.3s ease;
+        animation:inputHighlighter 0.3s ease;
+      }
+
+      @-webkit-keyframes inputHighlighter {
+        from { background:#48C774; }
+        to 	{ width:0; background:transparent; }
+      }
+      @-moz-keyframes inputHighlighter {
+        from { background:#48C774; }
+        to 	{ width:0; background:transparent; }
+      }
+      @keyframes inputHighlighter {
+        from { background:#48C774; }
+        to 	{ width:0; background:transparent; }
+      }
+
+    </style>
+
   </head>
   <body>
-    <noscript>
-      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
-    </noscript>
-    <div id="app"></div>
+    
+    <div id="app">
+      <div id="TodoCard">
+        <header>
+          <p class="date">{{ today }}</p>
+          <h2>VueJs Tutorial ToDo List</h2>
+          <p class="task">{{TodoCard.taskNumber}} tâches</p>
+        </header>
+
+        <div id="NewTodo">
+          <div class="group">      
+            <input class="taskInput" v-model.text="TodoCard.NewTodo.task" type="text" required>
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label class="taskLabel">Nouvelle tâche...</label>
+          </div>
+          <button @click='addToList' class="addingButton">
+            <p>+</p>
+          </button>
+          
+        </div>
+
+
+        <ul id="TodoList">
+          <li v-for="item in TodoCard.TodoList" v-if="item.display" >
+              <input @click='checkTask(item.index)' class ="todoCheckbox" name="checkbox" type="checkbox">
+              <label class="todoLabel" v-bind:class="{ striped: item.isStriped }" for="checkbox">{{ item.name }}</label>
+              <button @click='removeToList(item.index)' class="deletingButton">
+                <img src="img/delete.png" alt="Poubelle">
+              </button>
+          </li>
+
+        </ul>
+
+      </div>
+      
+    </div>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script>
+      const app = new Vue({
+        el: '#app',
+        data: {
+          i: 0,
+          atelier: 'Atelier Mars 2021',
+          about: 'Découvrer comment styliser simplement votre Todo list avec ',
+          websiteName: 'Bulma',
+          TodoCard: {
+            taskNumber: 0,
+            NewTodo: {
+              task: '',
+
+            },
+            TodoList: [],
+          },
+        },
+        computed: {
+          today() {
+
+            let options = { weekday: 'long'};
+            let today = new Date();
+            let jour = new Intl.DateTimeFormat('fr-FR', options).format(today);
+            let dd = String(today.getDate()).padStart(2, '0');
+            let mm = String(today.getMonth());
+            let monthName = ["Janvier","Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
+
+            let date = jour + " " + dd + " " + monthName[mm];
+            return date;
+
+
+          }
+        },
+        methods: {
+          removeToList(index) {
+            console.log(index);
+            console.log(this.TodoCard.TodoList);
+            this.TodoCard.TodoList[index].display = false
+            this.TodoCard.taskNumber -= 1;
+          },
+          addToList(){
+            console.log(this.TodoCard.TodoList);
+            if(this.TodoCard.NewTodo.task == "" || this.TodoCard.NewTodo.task == undefined){
+              return
+            };
+            console.log(this.i)
+            let task = {
+              name: this.TodoCard.NewTodo.task,
+              index: this.i,
+              display: true,
+              isStriped: false,
+            };
+            this.TodoCard.TodoList.push(task);
+            this.TodoCard.taskNumber += 1;
+            this.i += 1;
+          },
+          checkTask(index){
+            let item = this.TodoCard.TodoList[index]
+            item.isStriped ? item.isStriped = false : item.isStriped = true;
+          }
+
+
+
+
+        },
+
+
+
+
+      })
+    
+    </script>
+    
     <!-- built files will be auto injected -->
   </body>
 </html>
