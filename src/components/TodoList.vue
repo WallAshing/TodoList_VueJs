@@ -43,7 +43,7 @@ export default {
         },
         removeToList(index) {
             this.tasks[index].deleted = true
-            TodoCard.taskNumber -= 1;
+            this.i -= 1;
         },
         checkTask(index){
             let item = this.tasks[index]
